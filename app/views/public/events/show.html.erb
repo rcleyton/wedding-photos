@@ -1,0 +1,61 @@
+<% content_for :title, @event.name %>
+
+<div class="w-full max-w-lg mx-auto space-y-6">
+  <div>
+    <h1 class="text-3xl font-bold">
+      <%= @event.name %>
+    </h1>
+
+    <p class="mt-2 text-gray-600">
+      Compartilhe uma foto desse momento com a gente ❤️
+    </p>
+  </div>
+
+  <% if notice.present? %>
+    <p role="status" class="text-green-700">
+      <%= notice %>
+    </p>
+  <% end %>
+
+  <% if @photo.errors.any? %>
+    <div role="alert" class="text-red-700">
+      <p>Não foi possível enviar a foto:</p>
+
+      <ul class="list-disc pl-5">
+        <% @photo.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with(
+        model: @photo,
+        url: public_event_photos_path(@event.public_token),
+        class: "space-y-4"
+      ) do |form| %>
+
+    <div>
+      <%= form.label :guest_name,
+                     "Seu nome (opcional)",
+                     class: "block mb-2" %>
+
+      <%= form.text_field :guest_name,
+                          class: "w-full border rounded px-3 py-2" %>
+    </div>
+
+    <div>
+      <%= form.label :file,
+                     "Foto",
+                     class: "block mb-2" %>
+
+      <%= form.file_field :file,
+                          accept: "image/*",
+                          required: true,
+                          class: "block w-full" %>
+    </div>
+
+    <%= form.submit "Enviar foto",
+                    class: "w-full rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
+  <% end %>
+</div>

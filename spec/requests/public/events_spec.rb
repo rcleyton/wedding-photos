@@ -1,0 +1,26 @@
+require "rails_helper"
+
+RSpec.describe "Public events", type: :request do
+  it "shows an event and a single photo upload form using its public token" do
+    event = Event.create!(name: "Casamento de Ana", slug: "ana")
+
+    get public_event_path(event.public_token)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(event.name)
+    form = Nokogiri::HTML(response.body).at_css("form")
+    expect(form["action"]).to eq(public_event_photos_path(event.public_token))
+    expect(form["method"]).to eq("post")
+    expect(form["enctype"]).to eq("multipart/form-data")
+    expect(form.at_css('input[name="photo[guest_name]"]')).to be_present
+    file_input = form.at_css('input[type="file"][name="photo[file]"]')
+    expect(file_input).to be_present
+    expect(file_input["multiple"]).to be_nil
+  end
+
+  it "returns 404 for an invalid public token" do
+    get public_event_path("invalid-token")
+
+    expect(response).to have_http_status(:not_found)
+  end
+end
