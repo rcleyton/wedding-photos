@@ -19,6 +19,77 @@ RSpec.describe "Public photo uploads", type: :request do
     event.photos.each { |photo| photo.file.purge }
   end
 
+  it "accepts exactly 20 files, ignoring the blank form entry" do
+    files = Array.new(20) { fixture_file_upload("photo.jpg", "image/jpeg") }
+
+    expect do
+      post public_event_photos_path(event.public_token),
+           params: { photo: { files: [ "", *files ] } }
+    end.to change(Photo, :count).by(20)
+
+    expect(response).to have_http_status(:see_other)
+    expect(event.photos.count).to eq(20)
+    expect(event.photos).to all(be_pending)
+    follow_redirect!
+    expect(response.body).to include("20 fotos enviadas com sucesso!")
+  end
+
+  it "rejects 21 files without creating photos, attachments or blobs" do
+    files = Array.new(21) { fixture_file_upload("photo.jpg", "image/jpeg") }
+
+    expect do
+      post public_event_photos_path(event.public_token),
+           params: { photo: { guest_name: "Maria", files: files } }
+    end.to change(Photo, :count).by(0)
+      .and change(ActiveStorage::Attachment, :count).by(0)
+      .and change(ActiveStorage::Blob, :count).by(0)
+
+    expect(response).to have_http_status(422)
+    document = Nokogiri::HTML(response.body)
+    expect(document.at_css('[role="alert"]').text).to include("Envie no máximo 20 fotos por vez.")
+    expect(document.at_css('input[name="photo[guest_name]"]')["value"]).to eq("Maria")
+  end
+
+  it "rolls back the batch when a later file is an SVG, even if declared as JPEG" do
+    invalid_file = fixture_file_upload("photo.svg", "image/jpeg")
+
+    expect do
+      post public_event_photos_path(event.public_token),
+           params: { photo: { guest_name: "Maria", files: [ file, invalid_file ] } }
+    end.to change(Photo, :count).by(0)
+      .and change(ActiveStorage::Attachment, :count).by(0)
+      .and change(ActiveStorage::Blob, :count).by(0)
+
+    expect(response).to have_http_status(422)
+    document = Nokogiri::HTML(response.body)
+    expect(document.at_css('[role="alert"]').text).to include(
+      "Nenhuma foto foi enviada", "deve ser uma imagem JPEG, PNG, WebP, HEIC ou HEIF."
+    )
+    expect(document.at_css('input[name="photo[guest_name]"]')["value"]).to eq("Maria")
+  end
+
+  it "rolls back the batch when a later file exceeds 20 MB" do
+    Tempfile.create([ "oversized", ".jpg" ]) do |oversized|
+      oversized.binmode
+      oversized.write(File.binread(Rails.root.join("spec/fixtures/files/photo.jpg")))
+      oversized.truncate(20.megabytes + 1)
+      oversized.flush
+      upload = Rack::Test::UploadedFile.new(oversized.path, "image/jpeg")
+
+      expect do
+        post public_event_photos_path(event.public_token),
+             params: { photo: { files: [ file, upload ] } }
+      end.to change(Photo, :count).by(0)
+        .and change(ActiveStorage::Attachment, :count).by(0)
+        .and change(ActiveStorage::Blob, :count).by(0)
+
+      expect(response).to have_http_status(422)
+      expect(Nokogiri::HTML(response.body).at_css('[role="alert"]').text).to include(
+        "Nenhuma foto foi enviada", "deve ter no máximo 20 MB."
+      )
+    end
+  end
+
   it "creates an attached photo and redirects to the public event" do
     expect do
       post public_event_photos_path(event.public_token),
@@ -218,67 +289,5 @@ RSpec.describe "Public photo uploads", type: :request do
         "Selecione pelo menos uma foto."
       )
     end
-  end
-
-  it "rolls back photos, attachments and blobs when the second photo cannot be saved" do
-    initial_count = Photo.count
-    saves = 0
-
-    allow_any_instance_of(Photo)
-      .to receive(:save!)
-      .and_wrap_original do |original, *args, **kwargs|
-        saves += 1
-
-        if saves == 2
-          expect(Photo.count).to eq(initial_count + 1)
-
-          original.receiver.errors.add(
-            :file,
-            "não pôde ser salvo"
-          )
-
-          raise ActiveRecord::RecordInvalid,
-                original.receiver
-        end
-
-        original.call(*args, **kwargs)
-      end
-
-    expect do
-      post public_event_photos_path(event.public_token),
-           params: {
-             photo: {
-               guest_name: "Maria",
-               files: [
-                 file,
-                 fixture_file_upload(
-                   "photo.jpg",
-                   "image/jpeg"
-                 )
-               ]
-             }
-           }
-    end.to change(Photo, :count).by(0)
-      .and change(ActiveStorage::Attachment, :count).by(0)
-      .and change(ActiveStorage::Blob, :count).by(0)
-
-    expect(saves).to eq(2)
-
-    expect(response).to have_http_status(422)
-
-    document = Nokogiri::HTML(response.body)
-
-    expect(
-      document.at_css('[role="alert"]').text
-    ).to include(
-      "Nenhuma foto foi enviada",
-      "não pôde ser salvo"
-    )
-
-    expect(
-      document.at_css(
-        'input[name="photo[guest_name]"]'
-      )["value"]
-    ).to eq("Maria")
   end
 end

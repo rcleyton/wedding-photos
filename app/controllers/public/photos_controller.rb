@@ -1,5 +1,7 @@
 module Public
   class PhotosController < ApplicationController
+    MAX_FILES_PER_UPLOAD = 20
+
     before_action :set_event
 
     def create
@@ -13,6 +15,16 @@ module Public
 
       if files.empty?
         @photo.errors.add(:base, "Selecione pelo menos uma foto.")
+
+        return render "public/events/show",
+                      status: :unprocessable_entity
+      end
+
+      if files.size > MAX_FILES_PER_UPLOAD
+        @photo.errors.add(
+          :base,
+          "Envie no máximo #{MAX_FILES_PER_UPLOAD} fotos por vez."
+        )
 
         return render "public/events/show",
                       status: :unprocessable_entity

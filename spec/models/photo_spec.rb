@@ -20,7 +20,7 @@ RSpec.describe Photo, type: :model do
     expect(photo.errors.of_kind?(:event, :blank)).to be true
   end
 
-  it "belongs to its event and allows an absent guest name and file" do
+  it "belongs to its event" do
     photo.save!
 
     expect(photo.reload.event).to eq(event)
@@ -49,14 +49,11 @@ RSpec.describe Photo, type: :model do
   end
 
   it "persists an attached file" do
-    photo.file.attach(io: StringIO.new("photo content"), filename: "photo.jpg", content_type: "image/jpeg", identify: false)
     photo.save!
 
     expect(photo.reload.file).to be_attached
     expect(photo.file.download).to eq("photo content")
     expect(photo.file.filename.to_s).to eq("photo.jpg")
-  ensure
-    photo.file.purge if photo.file.attached?
   end
 
   it "allows an absent guest name" do
@@ -70,5 +67,35 @@ RSpec.describe Photo, type: :model do
 
     expect(photo).not_to be_valid
     expect(photo.errors.of_kind?(:file, :blank)).to be true
+  end
+
+  %w[image/jpeg image/png image/webp image/heic image/heif].each do |content_type|
+    it "accepts #{content_type}" do
+      photo.file.blob.content_type = content_type
+
+      expect(photo).to be_valid
+    end
+  end
+
+  %w[image/svg+xml application/pdf application/zip image/gif application/octet-stream].each do |content_type|
+    it "rejects #{content_type}" do
+      photo.file.blob.content_type = content_type
+
+      expect(photo).not_to be_valid
+      expect(photo.errors[:file]).to include("deve ser uma imagem JPEG, PNG, WebP, HEIC ou HEIF.")
+    end
+  end
+
+  it "accepts a file of exactly 20 MB" do
+    photo.file.blob.byte_size = 20.megabytes
+
+    expect(photo).to be_valid
+  end
+
+  it "rejects a file larger than 20 MB" do
+    photo.file.blob.byte_size = 20.megabytes + 1
+
+    expect(photo).not_to be_valid
+    expect(photo.errors[:file]).to include("deve ter no máximo 20 MB.")
   end
 end

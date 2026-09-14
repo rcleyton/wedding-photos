@@ -51,12 +51,13 @@
 
       <%= form.file_field :files,
                           multiple: true,
-                          accept: "image/*",
+                          accept: Photo::ALLOWED_CONTENT_TYPES.join(","),
                           required: true,
                           class: "block w-full" %>
 
       <p class="mt-2 text-sm text-gray-500">
-        Você pode selecionar várias fotos de uma vez.
+        Máximo de 20 fotos por envio e máximo de 20 MB por foto.
+        Formatos aceitos: JPEG, PNG, WebP, HEIC e HEIF.
       </p>
     </div>
 
