@@ -7,7 +7,7 @@
     </h1>
 
     <p class="mt-2 text-gray-600">
-      Compartilhe uma foto desse momento com a gente ❤️
+      Compartilhe fotos desse momento com a gente ❤️
     </p>
   </div>
 
@@ -19,7 +19,7 @@
 
   <% if @photo.errors.any? %>
     <div role="alert" class="text-red-700">
-      <p>Não foi possível enviar a foto:</p>
+      <p>Não foi possível enviar as fotos:</p>
 
       <ul class="list-disc pl-5">
         <% @photo.errors.full_messages.each do |message| %>
@@ -44,18 +44,23 @@
                           class: "w-full border rounded px-3 py-2" %>
     </div>
 
-    <div>
-      <%= form.label :file,
-                     "Foto",
-                     class: "block mb-2" %>
+    <div class="bg-gray-100 p-4 rounded">
+      <%= form.label :files,
+                    "Fotos",
+                    class: "block mb-2" %>
 
-      <%= form.file_field :file,
+      <%= form.file_field :files,
+                          multiple: true,
                           accept: "image/*",
                           required: true,
                           class: "block w-full" %>
+
+      <p class="mt-2 text-sm text-gray-500">
+        Você pode selecionar várias fotos de uma vez.
+      </p>
     </div>
 
-    <%= form.submit "Enviar foto",
+    <%= form.submit "Enviar fotos",
                     class: "w-full rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
   <% end %>
 </div>
