@@ -1,0 +1,22 @@
+<% content_for :title, "QR Code — #{@event.name}" %>
+
+<div class="w-full max-w-lg mx-auto space-y-6">
+  <h1 class="text-3xl font-bold"><%= @event.name %></h1>
+
+  <p>Convidados podem escanear este QR Code para enviar fotos do evento.</p>
+
+  <div role="img" aria-label="QR Code para enviar fotos do evento" class="w-full max-w-sm mx-auto">
+    <%# Only library-generated SVG with fixed rendering options is marked safe. %>
+    <%= @qr_code.as_svg(
+          color: "000",
+          fill: "fff",
+          module_size: 6,
+          offset: 24,
+          viewbox: true
+        ).html_safe %>
+  </div>
+
+  <p class="break-all">
+    <%= link_to @public_url, @public_url, class: "text-blue-600 underline" %>
+  </p>
+</div>

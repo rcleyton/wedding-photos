@@ -1,5 +1,8 @@
 source "https://rubygems.org"
 
+# Generate QR codes for public event URLs.
+gem "rqrcode", "~> 3.0"
+
 gem "rails", "~> 8.0.5", ">= 8.0.5.1"
 gem "json", "~> 2.0"
 gem "propshaft"
