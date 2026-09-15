@@ -1,8 +1,27 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [ :show, :qr_code ]
 
+  def new
+    @event = Event.new
+  end
+
+  def create
+    @event = Event.new(event_params)
+
+    if @event.save
+      redirect_to event_path(@event),
+                  status: :see_other,
+                  notice: "Evento criado com sucesso!"
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def show
-    @photos = @event.photos.with_attached_file.order(created_at: :desc, id: :desc).load
+    @photos = @event.photos
+                    .with_attached_file
+                    .order(created_at: :desc, id: :desc)
+                    .load
   end
 
   def qr_code
@@ -14,6 +33,14 @@ class EventsController < ApplicationController
   end
 
   private
+
+  def event_params
+    params.require(:event).permit(
+      :name,
+      :slug,
+      :event_date
+    )
+  end
 
   def set_event
     @event = Event.find(params[:id])

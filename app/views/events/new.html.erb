@@ -1,0 +1,40 @@
+<% content_for :title, "Novo evento" %>
+
+<div class="w-full max-w-lg mx-auto space-y-6 pb-8">
+  <h1 class="text-3xl font-bold">Novo evento</h1>
+
+  <% if @event.errors.any? %>
+    <div role="alert" class="text-red-700">
+      <p>Não foi possível criar o evento:</p>
+      <ul class="list-disc pl-5">
+        <% @event.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @event, class: "space-y-4" do |form| %>
+    <div>
+      <%= form.label :name, "Nome do evento", class: "block mb-2" %>
+      <%= form.text_field :name, required: true, class: "w-full border rounded px-3 py-2" %>
+    </div>
+    <div>
+      <%= form.label :slug, "Slug", class: "block mb-2" %>
+
+      <%= form.text_field :slug,
+                          required: true,
+                          class: "w-full border rounded px-3 py-2" %>
+
+      <p class="mt-1 text-sm text-gray-500">
+        Identificador do evento, por exemplo: casamento-ana-e-joao
+      </p>
+    </div>
+    <div>
+      <%= form.label :event_date, "Data do evento (opcional)", class: "block mb-2" %>
+      <%= form.date_field :event_date, class: "w-full border rounded px-3 py-2" %>
+    </div>
+    <%= form.submit "Criar evento",
+                class: "w-full sm:w-auto rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
+  <% end %>
+</div>

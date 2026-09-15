@@ -1,7 +1,13 @@
 <% content_for :title, "Eventos" %>
 
 <div class="w-full space-y-6 pb-8">
-  <h1 class="text-3xl font-bold">Eventos</h1>
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-3xl font-bold">Eventos</h1>
+
+    <%= link_to "Novo evento",
+                new_event_path,
+                class: "inline-block rounded bg-blue-600 text-white px-4 py-2" %>
+  </header>
 
   <% if @events.empty? %>
     <p class="rounded bg-gray-100 p-6">Nenhum evento cadastrado.</p>
