@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :events, only: [ :new, :create, :show, :edit, :update, :destroy ] do
     get :qr_code, on: :member
+    resources :photos, only: :destroy
   end
 
   namespace :public, path: "e" do

@@ -66,6 +66,9 @@
             <p>Tamanho: <%= number_to_human_size(photo.file.byte_size) %></p>
             <%= link_to "Baixar imagem", rails_blob_path(photo.file, disposition: "attachment"), class: "text-blue-600 underline" %>
           <% end %>
+          <%= button_to "Excluir foto", event_photo_path(@event, photo), method: :delete,
+                        form: { data: { turbo_confirm: "Tem certeza que deseja excluir esta foto?" } },
+                        class: "rounded bg-red-600 text-white px-4 py-2" %>
         </article>
       <% end %>
     </div>
