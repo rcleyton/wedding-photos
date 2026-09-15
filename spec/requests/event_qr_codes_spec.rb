@@ -1,10 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "Event QR codes", type: :request do
+  def sign_in
+    user = User.create!(email_address: "admin@example.com", password: "test-password")
+    post session_path, params: { email_address: user.email_address, password: "test-password" }
+  end
+
   let!(:event) { Event.create!(name: "Casamento de Ana", slug: "ana") }
 
   it "shows the event name, QR code and absolute public URL" do
     host! "localhost:3000"
+    sign_in
     public_url = public_event_url(public_token: event.public_token, host: "localhost", port: 3000, protocol: "http")
     expect(RQRCode::QRCode).to receive(:new).with(public_url).and_call_original
 
@@ -23,6 +29,7 @@ RSpec.describe "Event QR codes", type: :request do
   it "encodes only the public URL with the request HTTPS host" do
     host! "photos.example.com"
     https!
+    sign_in
     public_url = public_event_url(public_token: event.public_token, host: "photos.example.com", protocol: "https")
     expect(RQRCode::QRCode).to receive(:new).with(public_url).and_call_original
 
@@ -33,6 +40,7 @@ RSpec.describe "Event QR codes", type: :request do
   end
 
   it "returns 404 for a missing event without generating a QR code" do
+    sign_in
     expect(RQRCode::QRCode).not_to receive(:new)
 
     get qr_code_event_path(id: "missing")

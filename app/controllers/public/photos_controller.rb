@@ -1,5 +1,7 @@
 module Public
   class PhotosController < ApplicationController
+    allow_unauthenticated_access
+
     MAX_FILES_PER_UPLOAD = 20
 
     before_action :set_event

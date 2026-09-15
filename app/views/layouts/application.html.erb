@@ -23,6 +23,11 @@
   </head>
 
   <body>
+    <% if authenticated? %>
+      <div class="container mx-auto px-5 py-4">
+        <%= button_to "Sair", session_path, method: :delete, class: "text-blue-600 underline" %>
+      </div>
+    <% end %>
     <main class="container mx-auto mt-28 px-5 flex">
       <%= yield %>
     </main>

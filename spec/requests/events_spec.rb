@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Event dashboard", type: :request do
+  before do
+    user = User.create!(email_address: "admin@example.com", password: "test-password")
+    post session_path, params: { email_address: user.email_address, password: "test-password" }
+  end
+
   let!(:event) { Event.create!(name: "Casamento de Ana", slug: "ana", event_date: Date.new(2026, 9, 14)) }
 
   def create_photo(event:, filename:, guest_name: nil, created_at: Time.current, content_type: "image/jpeg")
