@@ -32,7 +32,8 @@
   <%= form_with(
         model: @photo,
         url: public_event_photos_path(@event.public_token),
-        class: "space-y-4"
+        class: "space-y-4",
+        data: { controller: "photo-upload", action: "submit->photo-upload#submit turbo:submit-end->photo-upload#finish turbo:before-cache@document->photo-upload#reset" }
       ) do |form| %>
 
     <div>
@@ -51,7 +52,8 @@
 
       <%= form.file_field :files,
                           multiple: true,
-                          accept: Photo::ALLOWED_CONTENT_TYPES.join(","),
+                          accept: "image/*",
+                          data: { photo_upload_target: "files", action: "change->photo-upload#select" },
                           required: true,
                           class: "block w-full" %>
 
@@ -61,7 +63,12 @@
       </p>
     </div>
 
+    <p data-photo-upload-target="counter" role="status" aria-live="polite">0 fotos selecionadas</p>
+    <p data-photo-upload-target="error" role="alert" class="text-red-700" hidden></p>
+    <div data-photo-upload-target="previews" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+
     <%= form.submit "Enviar fotos",
+                    data: { photo_upload_target: "button" },
                     class: "w-full rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
   <% end %>
 </div>

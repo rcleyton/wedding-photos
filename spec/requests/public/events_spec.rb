@@ -16,7 +16,8 @@ RSpec.describe "Public events", type: :request do
     file_input = form.at_css('input[type="file"][name="photo[files][]"]')
     expect(file_input).to be_present
     expect(file_input["multiple"]).not_to be_nil
-    expect(file_input["accept"]).to eq("image/jpeg,image/png,image/webp,image/heic,image/heif")
+    expect(response.body).to include("0 fotos selecionadas")
+    expect(file_input["accept"]).to eq("image/*")
     expect(response.body).to include("Máximo de 20 fotos por envio e máximo de 20 MB por foto.")
   end
 
