@@ -1,5 +1,18 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [ :show, :qr_code ]
+  before_action :set_event, only: [ :show, :qr_code, :edit, :update ]
+
+  def edit
+  end
+
+  def update
+    if @event.update(event_params)
+      redirect_to event_path(@event),
+                  status: :see_other,
+                  notice: "Evento atualizado com sucesso!"
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
 
   def new
     @event = Event.new

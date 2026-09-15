@@ -16,6 +16,7 @@
     <p>Fotos recebidas: <%= @photos.size %></p>
 
     <nav class="flex flex-wrap gap-4">
+      <%= link_to "Editar evento", edit_event_path(@event), class: "text-blue-600 underline" %>
       <%= link_to "Abrir página pública", public_event_path(@event.public_token), class: "text-blue-600 underline" %>
       <%= link_to "Ver QR Code", qr_code_event_path(@event), class: "text-blue-600 underline" %>
     </nav>
