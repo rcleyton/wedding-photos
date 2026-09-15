@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resource :session
   resources :passwords, param: :token
-  resources :events, only: [ :new, :create, :show, :edit, :update ] do
+  resources :events, only: [ :new, :create, :show, :edit, :update, :destroy ] do
     get :qr_code, on: :member
   end
 

@@ -1,5 +1,10 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [ :show, :qr_code, :edit, :update ]
+  before_action :set_event, only: [ :show, :qr_code, :edit, :update, :destroy ]
+
+  def destroy
+    @event.destroy!
+    redirect_to root_path, status: :see_other, notice: "Evento excluído com sucesso!"
+  end
 
   def edit
   end

@@ -22,6 +22,26 @@
     </nav>
   </header>
 
+  <div class="border-t pt-6">
+    <h2 class="font-semibold text-red-700">Zona de risco</h2>
+
+    <p class="mt-2 text-sm text-gray-600">
+      Excluir o evento removerá também todas as fotos associadas.
+    </p>
+
+    <div class="mt-4">
+      <%= button_to "Excluir evento",
+                    event_path(@event),
+                    method: :delete,
+                    form: {
+                      data: {
+                        turbo_confirm: "Tem certeza? Todas as fotos deste evento também serão excluídas."
+                      }
+                    },
+                    class: "rounded bg-red-600 text-white px-4 py-2" %>
+    </div>
+  </div>
+
   <% if @photos.empty? %>
     <p class="rounded bg-gray-100 p-6">Nenhuma foto foi enviada ainda.</p>
   <% else %>
