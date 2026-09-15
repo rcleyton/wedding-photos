@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root "dashboard#index"
+
   resource :session
   resources :passwords, param: :token
   resources :events, only: :show do

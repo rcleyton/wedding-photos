@@ -27,11 +27,13 @@ RSpec.describe "Administrative authentication", type: :request do
     expect(document.at_css('input[name="password"]')).to be_present
   end
 
-  it "handles direct login without a root route" do
+  it "redirects direct login to the administrative home" do
+    get new_session_path
     post session_path, params: { email_address: user.email_address, password: "test-password" }
+    expect(response).to redirect_to(root_url)
     follow_redirect!
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Você está autenticado")
+    expect(response.body).to include("Eventos", event.name)
   end
 
   it "rejects invalid credentials" do
@@ -48,6 +50,8 @@ RSpec.describe "Administrative authentication", type: :request do
   it "destroys the session on logout and denies further administrative access" do
     post session_path, params: { email_address: user.email_address, password: "test-password" }
     expect { delete session_path }.to change(Session, :count).by(-1)
+    expect(response).to redirect_to(new_session_path)
+    get root_path
     expect(response).to redirect_to(new_session_path)
     get event_path(event)
     expect(response).to redirect_to(new_session_path)

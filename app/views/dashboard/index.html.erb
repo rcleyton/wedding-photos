@@ -1,0 +1,25 @@
+<% content_for :title, "Eventos" %>
+
+<div class="w-full space-y-6 pb-8">
+  <h1 class="text-3xl font-bold">Eventos</h1>
+
+  <% if @events.empty? %>
+    <p class="rounded bg-gray-100 p-6">Nenhum evento cadastrado.</p>
+  <% else %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @events.each do |event| %>
+        <article class="rounded border p-4 space-y-3 break-words">
+          <h2 class="text-xl font-semibold"><%= event.name %></h2>
+          <% if event.event_date.present? %>
+            <p>Data: <%= event.event_date.strftime("%d/%m/%Y") %></p>
+          <% end %>
+          <p>Fotos recebidas: <%= @photo_counts.fetch(event.id, 0) %></p>
+          <nav class="flex flex-wrap gap-4">
+            <%= link_to "Abrir evento", event_path(event), class: "text-blue-600 underline" %>
+            <%= link_to "Ver QR Code", qr_code_event_path(event), class: "text-blue-600 underline" %>
+          </nav>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>
