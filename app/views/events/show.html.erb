@@ -1,0 +1,48 @@
+<% content_for :title, @event.name %>
+
+<div class="w-full space-y-6 pb-8">
+  <header class="space-y-3">
+    <p class="text-gray-600">Dashboard do evento</p>
+    <h1 class="text-3xl font-bold"><%= @event.name %></h1>
+
+    <% if @event.event_date.present? %>
+      <p>Data: <%= @event.event_date.strftime("%d/%m/%Y") %></p>
+    <% end %>
+
+    <p>Fotos recebidas: <%= @photos.size %></p>
+
+    <nav class="flex flex-wrap gap-4">
+      <%= link_to "Abrir página pública", public_event_path(@event.public_token), class: "text-blue-600 underline" %>
+      <%= link_to "Ver QR Code", qr_code_event_path(@event), class: "text-blue-600 underline" %>
+    </nav>
+  </header>
+
+  <% if @photos.empty? %>
+    <p class="rounded bg-gray-100 p-6">Nenhuma foto foi enviada ainda.</p>
+  <% else %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @photos.each do |photo| %>
+        <article class="rounded border p-4 space-y-3 break-words">
+          <% if photo.file.attached? %>
+            <% if %w[image/jpeg image/png image/webp].include?(photo.file.content_type) %>
+              <%= image_tag url_for(photo.file), alt: photo.file.filename.to_s,
+                            loading: "lazy", class: "w-full h-56 object-contain bg-gray-100 rounded" %>
+            <% else %>
+              <p class="bg-gray-100 rounded p-4">Prévia indisponível para este formato. Baixe o arquivo para visualizar.</p>
+            <% end %>
+          <% end %>
+
+          <h2 class="font-semibold"><%= photo.guest_name.presence || "Convidado" %></h2>
+          <p>Enviada em: <%= time_tag photo.created_at, photo.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+          <p>Status: <%= photo.status %></p>
+
+          <% if photo.file.attached? %>
+            <p>Arquivo: <%= photo.file.filename %></p>
+            <p>Tamanho: <%= number_to_human_size(photo.file.byte_size) %></p>
+            <%= link_to "Baixar imagem", rails_blob_path(photo.file, disposition: "attachment"), class: "text-blue-600 underline" %>
+          <% end %>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :events, only: [] do
+  resources :events, only: :show do
     get :qr_code, on: :member
   end
 
