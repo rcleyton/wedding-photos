@@ -17,7 +17,7 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: ENV["APP_HOST"], protocol: "https" }
   config.i18n.fallbacks = true
   config.active_record.dump_schema_after_migration = false
   config.active_record.attributes_for_inspect = [ :id ]

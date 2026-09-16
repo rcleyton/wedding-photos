@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby "4.0.5"
+
 # Generate QR codes for public event URLs.
 gem "rqrcode", "~> 3.0"
 
