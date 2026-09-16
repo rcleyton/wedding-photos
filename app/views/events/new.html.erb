@@ -1,7 +1,9 @@
 <% content_for :title, "Novo evento" %>
 
-<div class="w-full max-w-lg mx-auto space-y-6 pb-8">
-  <h1 class="text-3xl font-bold">Novo evento</h1>
+<div class="w-full max-w-lg mx-auto space-y-6 pb-12">
+  <div class="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-sm space-y-6">
+    <h1 class="font-serif text-3xl font-bold text-stone-900 tracking-tight border-b border-stone-100 pb-4">Novo evento</h1>
 
-  <%= render "form", event: @event %>
+    <%= render "form", event: @event %>
+  </div>
 </div>

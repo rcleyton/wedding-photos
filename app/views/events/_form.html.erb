@@ -1,14 +1,14 @@
 <!-- app/views/events/_form.html.erb -->
 
 <% if event.errors.any? %>
-  <div role="alert" class="text-red-700">
-    <p>
+  <div role="alert" class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium shadow-xs space-y-2">
+    <p class="font-serif font-semibold text-base">
       <%= event.persisted? ?
             "Não foi possível atualizar o evento:" :
             "Não foi possível criar o evento:" %>
     </p>
 
-    <ul class="list-disc pl-5">
+    <ul class="list-disc pl-5 space-y-1 text-xs text-rose-700">
       <% event.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
@@ -16,40 +16,42 @@
   </div>
 <% end %>
 
-<%= form_with model: event, class: "space-y-4" do |form| %>
-  <div>
+<%= form_with model: event, class: "space-y-6" do |form| %>
+  <div class="space-y-1.5">
     <%= form.label :name,
                    "Nome do evento",
-                   class: "block mb-2" %>
+                   class: "block text-sm font-medium text-stone-700" %>
 
     <%= form.text_field :name,
                         required: true,
-                        class: "w-full border rounded px-3 py-2" %>
+                        class: "w-full rounded-lg border border-stone-300 bg-white px-3.5 py-2.5 text-stone-900 shadow-xs placeholder-stone-400 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-sm transition-all" %>
   </div>
 
-  <div>
+  <div class="space-y-1.5">
     <%= form.label :slug,
                    "Slug",
-                   class: "block mb-2" %>
+                   class: "block text-sm font-medium text-stone-700" %>
 
     <%= form.text_field :slug,
                         required: true,
-                        class: "w-full border rounded px-3 py-2" %>
+                        class: "w-full rounded-lg border border-stone-300 bg-white px-3.5 py-2.5 text-stone-900 shadow-xs placeholder-stone-400 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-sm transition-all" %>
 
-    <p class="mt-1 text-sm text-gray-500">
+    <p class="mt-1 text-xs text-stone-500">
       Identificador do evento, por exemplo: casamento-ana-e-joao
     </p>
   </div>
 
-  <div>
+  <div class="space-y-1.5">
     <%= form.label :event_date,
                    "Data do evento (opcional)",
-                   class: "block mb-2" %>
+                   class: "block text-sm font-medium text-stone-700" %>
 
     <%= form.date_field :event_date,
-                        class: "w-full border rounded px-3 py-2" %>
+                        class: "w-full rounded-lg border border-stone-300 bg-white px-3.5 py-2.5 text-stone-900 shadow-xs focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-sm transition-all" %>
   </div>
 
-  <%= form.submit event.persisted? ? "Atualizar evento" : "Criar evento",
-                  class: "w-full sm:w-auto rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
+  <div class="pt-2">
+    <%= form.submit event.persisted? ? "Atualizar evento" : "Criar evento",
+                    class: "w-full sm:w-auto inline-flex justify-center items-center rounded-lg bg-stone-900 hover:bg-rose-600 text-white px-6 py-2.5 text-sm font-medium shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer" %>
+  </div>
 <% end %>

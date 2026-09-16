@@ -1,31 +1,31 @@
 <% content_for :title, @event.name %>
 
-<div class="w-full space-y-6 pb-8">
+<div class="w-full space-y-8 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
   <% if notice.present? %>
-    <p role="status" class="text-green-700"><%= notice %></p>
+    <p role="status" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium shadow-sm animate-fade-in"><%= notice %></p>
   <% end %>
 
-  <header class="space-y-3">
-    <p class="text-gray-600">Dashboard do evento</p>
-    <h1 class="text-3xl font-bold"><%= @event.name %></h1>
+  <header class="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-sm space-y-4">
+    <p class="text-xs font-semibold tracking-wider text-rose-600 uppercase">Dashboard do evento</p>
+    <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight"><%= @event.name %></h1>
 
     <% if @event.event_date.present? %>
-      <p>Data: <%= @event.event_date.strftime("%d/%m/%Y") %></p>
+      <p class="inline-block text-xs font-medium text-stone-600 bg-stone-100 px-3 py-1 rounded-full">Data: <%= @event.event_date.strftime("%d/%m/%Y") %></p>
     <% end %>
 
-    <p>Fotos recebidas: <%= @photos.size %></p>
+    <p class="text-xs font-semibold text-stone-500 bg-stone-50 px-3 py-1.5 rounded-lg border border-stone-100 w-fit">Fotos recebidas: <%= @photos.size %></p>
 
-    <nav class="flex flex-wrap gap-4">
-      <%= link_to "Editar evento", edit_event_path(@event), class: "text-blue-600 underline" %>
-      <%= link_to "Abrir página pública", public_event_path(@event.public_token), class: "text-blue-600 underline" %>
-      <%= link_to "Ver QR Code", qr_code_event_path(@event), class: "text-blue-600 underline" %>
+    <nav class="flex flex-wrap items-center gap-3 pt-4 border-t border-stone-100">
+      <%= link_to "Editar evento", edit_event_path(@event), class: "inline-flex items-center px-4 py-2 rounded-lg bg-white hover:bg-stone-50 text-stone-700 text-sm font-medium border border-stone-200 transition-colors" %>
+      <%= link_to "Abrir página pública", public_event_path(@event.public_token), class: "inline-flex items-center px-4 py-2 rounded-lg bg-stone-900 hover:bg-rose-600 text-white text-sm font-medium transition-all shadow-sm" %>
+      <%= link_to "Ver QR Code", qr_code_event_path(@event), class: "inline-flex items-center px-4 py-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-sm font-medium border border-stone-200 transition-colors" %>
     </nav>
   </header>
 
-  <div class="border-t pt-6">
-    <h2 class="font-semibold text-red-700">Zona de risco</h2>
+  <div class="bg-rose-50/40 rounded-2xl border border-rose-100 p-6 sm:p-8 pt-6 space-y-3">
+    <h2 class="font-serif text-lg font-bold text-rose-950">Zona de risco</h2>
 
-    <p class="mt-2 text-sm text-gray-600">
+    <p class="mt-2 text-sm text-stone-600">
       Excluir o evento removerá também todas as fotos associadas.
     </p>
 
@@ -38,37 +38,42 @@
                         turbo_confirm: "Tem certeza? Todas as fotos deste evento também serão excluídas."
                       }
                     },
-                    class: "rounded bg-red-600 text-white px-4 py-2" %>
+                    class: "inline-flex items-center rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-medium px-4 py-2 text-sm shadow-xs transition-colors cursor-pointer" %>
     </div>
   </div>
 
   <% if @photos.empty? %>
-    <p class="rounded bg-gray-100 p-6">Nenhuma foto foi enviada ainda.</p>
+    <p class="rounded-2xl bg-stone-50 border-2 border-dashed border-stone-200 p-12 text-center font-serif text-stone-600">Nenhuma foto foi enviada ainda.</p>
   <% else %>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @photos.each do |photo| %>
-        <article class="rounded border p-4 space-y-3 break-words">
-          <% if photo.file.attached? %>
-            <% if %w[image/jpeg image/png image/webp].include?(photo.file.content_type) %>
-              <%= image_tag url_for(photo.file), alt: photo.file.filename.to_s,
-                            loading: "lazy", class: "w-full h-56 object-contain bg-gray-100 rounded" %>
-            <% else %>
-              <p class="bg-gray-100 rounded p-4">Prévia indisponível para este formato. Baixe o arquivo para visualizar.</p>
+        <article class="bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm hover:shadow-md transition-shadow space-y-3 break-words flex flex-col justify-between">
+          <div class="space-y-3">
+            <% if photo.file.attached? %>
+              <% if %w[image/jpeg image/png image/webp].include?(photo.file.content_type) %>
+                <%= image_tag url_for(photo.file), alt: photo.file.filename.to_s,
+                              loading: "lazy", class: "w-full h-56 object-cover bg-stone-100 rounded-xl overflow-hidden" %>
+              <% else %>
+                <p class="bg-stone-100 rounded-xl p-4 text-center text-xs text-stone-500 font-medium">Prévia indisponível para este formato. Baixe o arquivo para visualizar.</p>
+              <% end %>
             <% end %>
-          <% end %>
 
-          <h2 class="font-semibold"><%= photo.guest_name.presence || "Convidado" %></h2>
-          <p>Enviada em: <%= time_tag photo.created_at, photo.created_at.strftime("%d/%m/%Y %H:%M") %></p>
-          <p>Status: <%= photo.status %></p>
+            <h2 class="font-serif font-semibold text-stone-800 text-lg leading-tight"><%= photo.guest_name.presence || "Convidado" %></h2>
+            <p class="text-xs text-stone-500">Enviada em: <%= time_tag photo.created_at, photo.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+            <p class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 uppercase tracking-wider">Status: <%= photo.status %></p>
 
-          <% if photo.file.attached? %>
-            <p>Arquivo: <%= photo.file.filename %></p>
-            <p>Tamanho: <%= number_to_human_size(photo.file.byte_size) %></p>
-            <%= link_to "Baixar imagem", rails_blob_path(photo.file, disposition: "attachment"), class: "text-blue-600 underline" %>
-          <% end %>
-          <%= button_to "Excluir foto", event_photo_path(@event, photo), method: :delete,
-                        form: { data: { turbo_confirm: "Tem certeza que deseja excluir esta foto?" } },
-                        class: "rounded bg-red-600 text-white px-4 py-2" %>
+            <% if photo.file.attached? %>
+              <p class="text-xs text-stone-500 truncate" title="<%= photo.file.filename %>">Arquivo: <%= photo.file.filename %></p>
+              <p class="text-xs text-stone-400">Tamanho: <%= number_to_human_size(photo.file.byte_size) %></p>
+              <%= link_to "Baixar imagem", rails_blob_path(photo.file, disposition: "attachment"), class: "inline-block text-xs font-semibold text-rose-600 hover:text-rose-700 transition-colors" %>
+            <% end %>
+          </div>
+
+          <div class="pt-3 border-t border-stone-100">
+            <%= button_to "Excluir foto", event_photo_path(@event, photo), method: :delete,
+                          form: { data: { turbo_confirm: "Tem certeza que deseja excluir esta foto?" } },
+                          class: "w-full sm:w-auto text-xs font-medium text-stone-400 hover:text-red-600 transition-colors bg-transparent border-0 p-0 cursor-pointer" %>
+          </div>
         </article>
       <% end %>
     </div>

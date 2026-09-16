@@ -1,31 +1,37 @@
 <% content_for :title, "Eventos" %>
 
-<div class="w-full space-y-6 pb-8">
+<div class="w-full space-y-8 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
   <% if notice.present? %>
-    <p role="status" class="text-green-700"><%= notice %></p>
+    <p role="status" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium shadow-sm animate-fade-in"><%= notice %></p>
   <% end %>
-  <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <h1 class="text-3xl font-bold">Eventos</h1>
+
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-stone-200 pb-6">
+    <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight">Eventos</h1>
 
     <%= link_to "Novo evento",
                 new_event_path,
-                class: "inline-block rounded bg-blue-600 text-white px-4 py-2" %>
+                class: "inline-flex items-center justify-center rounded-lg bg-stone-900 hover:bg-rose-600 text-white font-medium px-5 py-2.5 text-sm shadow-sm hover:shadow-md transition-all duration-200" %>
   </header>
 
   <% if @events.empty? %>
-    <p class="rounded bg-gray-100 p-6">Nenhum evento cadastrado.</p>
+    <p class="rounded-2xl bg-stone-50 border-2 border-dashed border-stone-200 p-12 text-center font-serif text-stone-600">Nenhum evento cadastrado.</p>
   <% else %>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <% @events.each do |event| %>
-        <article class="rounded border p-4 space-y-3 break-words">
-          <h2 class="text-xl font-semibold"><%= event.name %></h2>
-          <% if event.event_date.present? %>
-            <p>Data: <%= event.event_date.strftime("%d/%m/%Y") %></p>
-          <% end %>
-          <p>Fotos recebidas: <%= @photo_counts.fetch(event.id, 0) %></p>
-          <nav class="flex flex-wrap gap-4">
-            <%= link_to "Abrir evento", event_path(event), class: "text-blue-600 underline" %>
-            <%= link_to "Ver QR Code", qr_code_event_path(event), class: "text-blue-600 underline" %>
+        <article class="group relative rounded-2xl border border-stone-200/80 bg-white p-6 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 space-y-4 break-words flex flex-col justify-between">
+          <div class="space-y-3">
+            <h2 class="font-serif text-xl font-semibold text-stone-800 group-hover:text-rose-600 transition-colors leading-snug"><%= event.name %></h2>
+            
+            <% if event.event_date.present? %>
+              <p class="inline-block text-xs font-medium text-stone-600 bg-stone-100 px-3 py-1 rounded-full">Data: <%= event.event_date.strftime("%d/%m/%Y") %></p>
+            <% end %>
+            
+            <p class="text-xs font-semibold text-stone-500 bg-stone-50 px-3 py-1.5 rounded-lg border border-stone-100 w-fit">Fotos recebidas: <%= @photo_counts.fetch(event.id, 0) %></p>
+          </div>
+
+          <nav class="flex flex-wrap items-center gap-3 pt-4 border-t border-stone-100">
+            <%= link_to "Abrir evento", event_path(event), class: "text-sm font-semibold text-stone-800 hover:text-rose-600 transition-colors" %>
+            <%= link_to "Ver QR Code", qr_code_event_path(event), class: "text-xs font-medium text-stone-500 hover:text-stone-900 bg-stone-50 hover:bg-stone-100 px-3 py-1.5 rounded-lg border border-stone-200/60 transition-colors" %>
           </nav>
         </article>
       <% end %>

@@ -1,11 +1,11 @@
 <% content_for :title, "QR Code — #{@event.name}" %>
 
-<div class="w-full max-w-lg mx-auto space-y-6">
-  <h1 class="text-3xl font-bold"><%= @event.name %></h1>
+<div class="w-full max-w-lg mx-auto space-y-6 bg-white border border-stone-200/80 rounded-2xl p-6 sm:p-8 shadow-sm text-center">
+  <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight"><%= @event.name %></h1>
 
-  <p>Convidados podem escanear este QR Code para enviar fotos do evento.</p>
+  <p class="text-sm text-stone-600 font-medium max-w-xs mx-auto">Convidados podem escanear este QR Code para enviar fotos do evento.</p>
 
-  <div role="img" aria-label="QR Code para enviar fotos do evento" class="w-full max-w-sm mx-auto">
+  <div role="img" aria-label="QR Code para enviar fotos do evento" class="w-full max-w-sm mx-auto bg-stone-50 p-4 rounded-xl border border-stone-100 shadow-inner flex justify-center items-center [&>svg]:max-w-full [&>svg]:h-auto">
     <%# Only library-generated SVG with fixed rendering options is marked safe. %>
     <%= @qr_code.as_svg(
           color: "000",
@@ -16,7 +16,7 @@
         ).html_safe %>
   </div>
 
-  <p class="break-all">
-    <%= link_to @public_url, @public_url, class: "text-blue-600 underline" %>
+  <p class="break-all text-xs font-mono bg-stone-50 p-3 rounded-lg border border-stone-200/60">
+    <%= link_to @public_url, @public_url, class: "text-rose-600 hover:text-rose-700 underline transition-colors" %>
   </p>
 </div>

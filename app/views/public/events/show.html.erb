@@ -1,27 +1,27 @@
 <% content_for :title, @event.name %>
 
-<div class="w-full max-w-lg mx-auto space-y-6">
-  <div>
-    <h1 class="text-3xl font-bold">
+<div class="w-full max-w-lg mx-auto space-y-6 bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-sm">
+  <div class="text-center space-y-2 border-b border-stone-100 pb-5">
+    <h1 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 tracking-tight">
       <%= @event.name %>
     </h1>
 
-    <p class="mt-2 text-gray-600">
+    <p class="mt-2 text-sm text-stone-600 font-medium">
       Compartilhe fotos desse momento com a gente ❤️
     </p>
   </div>
 
   <% if notice.present? %>
-    <p role="status" class="text-green-700">
+    <p role="status" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium shadow-xs animate-fade-in text-center">
       <%= notice %>
     </p>
   <% end %>
 
   <% if @photo.errors.any? %>
-    <div role="alert" class="text-red-700">
-      <p>Não foi possível enviar as fotos:</p>
+    <div role="alert" class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-medium shadow-xs space-y-2">
+      <p class="font-serif font-semibold text-base">Não foi possível enviar as fotos:</p>
 
-      <ul class="list-disc pl-5">
+      <ul class="list-disc pl-5 space-y-1 text-xs text-rose-700">
         <% @photo.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
@@ -32,43 +32,43 @@
   <%= form_with(
         model: @photo,
         url: public_event_photos_path(@event.public_token),
-        class: "space-y-4",
+        class: "space-y-5",
         data: { controller: "photo-upload", action: "submit->photo-upload#submit turbo:submit-end->photo-upload#finish turbo:before-cache@document->photo-upload#reset" }
       ) do |form| %>
 
-    <div>
+    <div class="space-y-1.5">
       <%= form.label :guest_name,
                      "Seu nome (opcional)",
-                     class: "block mb-2" %>
+                     class: "block text-sm font-medium text-stone-700" %>
 
       <%= form.text_field :guest_name,
-                          class: "w-full border rounded px-3 py-2" %>
+                          class: "w-full rounded-lg border border-stone-300 bg-white px-3.5 py-2.5 text-stone-900 shadow-xs placeholder-stone-400 focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-sm transition-all" %>
     </div>
 
-    <div class="bg-gray-100 p-4 rounded">
+    <div class="bg-stone-50 border border-stone-200/80 p-5 rounded-xl space-y-2 text-center">
       <%= form.label :files,
                     "Fotos",
-                    class: "block mb-2" %>
+                    class: "block font-serif font-semibold text-stone-800 text-base" %>
 
       <%= form.file_field :files,
                           multiple: true,
                           accept: "image/*",
                           data: { photo_upload_target: "files", action: "change->photo-upload#select" },
                           required: true,
-                          class: "block w-full" %>
+                          class: "block w-full text-xs text-stone-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-stone-900 file:text-white hover:file:bg-rose-600 file:transition-colors file:cursor-pointer cursor-pointer" %>
 
-      <p class="mt-2 text-sm text-gray-500">
+      <p class="mt-2 text-xs text-stone-500 leading-relaxed">
         Máximo de 20 fotos por envio e máximo de 20 MB por foto.
         Formatos aceitos: JPEG, PNG, WebP, HEIC e HEIF.
       </p>
     </div>
 
-    <p data-photo-upload-target="counter" role="status" aria-live="polite">0 fotos selecionadas</p>
-    <p data-photo-upload-target="error" role="alert" class="text-red-700" hidden></p>
+    <p data-photo-upload-target="counter" role="status" aria-live="polite" class="text-xs font-semibold text-stone-600 text-center bg-stone-100 py-2 rounded-lg">0 fotos selecionadas</p>
+    <p data-photo-upload-target="error" role="alert" class="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium" hidden></p>
     <div data-photo-upload-target="previews" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
 
     <%= form.submit "Enviar fotos",
                     data: { photo_upload_target: "button" },
-                    class: "w-full rounded bg-blue-600 text-white px-4 py-3 cursor-pointer font-medium" %>
+                    class: "w-full rounded-lg bg-stone-900 hover:bg-rose-600 text-white px-4 py-3 cursor-pointer font-medium text-sm shadow-xs hover:shadow-md transition-all duration-200" %>
   <% end %>
 </div>
