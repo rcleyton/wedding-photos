@@ -7,8 +7,12 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
-  config.assume_ssl = true
-  config.force_ssl = true
+  ssl_enabled =
+    ActiveModel::Type::Boolean.new.cast(
+      ENV.fetch("FORCE_SSL", "true")
+    )
+  config.assume_ssl = ssl_enabled
+  config.force_ssl = ssl_enabled
   config.log_tags = [ :request_id ]
   config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
