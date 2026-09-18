@@ -8,6 +8,8 @@ set :rvm_ruby_version, "ruby-4.0.5@wedding_photos"
 
 set :keep_releases, 5
 
+append :linked_files, ".env"
+
 append :linked_dirs,
   "log",
   "tmp/pids",
