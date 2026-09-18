@@ -6,10 +6,9 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-# All services are parsed even when unused; only require the path when selected.
 qa_disk:
   service: Disk
-  root: <%= (Rails.env.production? && ENV["ACTIVE_STORAGE_SERVICE"] == "qa_disk" ? ENV.fetch("ACTIVE_STORAGE_ROOT") : ENV["ACTIVE_STORAGE_ROOT"]).to_json %>
+  root: <%= ENV["ACTIVE_STORAGE_ROOT"] || Rails.root.join("storage") %>
 
 s3_compatible:
   service: S3
@@ -17,8 +16,6 @@ s3_compatible:
   secret_access_key: <%= ENV["S3_SECRET_ACCESS_KEY"] %>
   region: <%= ENV["S3_REGION"] %>
   bucket: <%= ENV["S3_BUCKET"] %>
-
   <% if ENV["S3_ENDPOINT"].present? %>
   endpoint: <%= ENV["S3_ENDPOINT"] %>
   <% end %>
-
