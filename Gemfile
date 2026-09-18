@@ -6,7 +6,7 @@ ruby "4.0.5"
 gem "rqrcode", "~> 3.0"
 
 gem "rails", "~> 8.0.5", ">= 8.0.5.1"
-gem "json", "~> 2.0"
+gem "json", "~> 3.0"
 gem "propshaft"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
