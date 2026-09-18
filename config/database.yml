@@ -15,17 +15,21 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    host: 127.0.0.1
     database: wedding_photos_production
     username: wedding_photos
     password: <%= ENV["WEDDING_PHOTOS_DATABASE_PASSWORD"] %>
+
   cache:
     <<: *primary_production
     database: wedding_photos_production_cache
     migrations_paths: db/cache_migrate
+
   queue:
     <<: *primary_production
     database: wedding_photos_production_queue
     migrations_paths: db/queue_migrate
+
   cable:
     <<: *primary_production
     database: wedding_photos_production_cable
