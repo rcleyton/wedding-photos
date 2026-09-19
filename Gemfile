@@ -5,7 +5,7 @@ ruby "4.0.5"
 # Generate QR codes for public event URLs.
 gem "rqrcode", "~> 3.0"
 
-gem "rails", "~> 8.0.5", ">= 8.0.5.1"
+gem "rails", "~> 8.1.3"
 gem "json", "~> 2.0"
 gem "propshaft"
 gem "pg", "~> 1.1"
