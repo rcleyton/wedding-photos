@@ -15,7 +15,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "tailwindcss-rails"
 gem "jbuilder"
-gem "aws-sdk-s3", "~> 1.48", require: false
+gem "aws-sdk-s3", "~> 1.235", require: false
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "solid_cache"
 gem "solid_queue"
